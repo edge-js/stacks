@@ -1,0 +1,4 @@
+<script>
+var a = require('a')
+</script>
+
