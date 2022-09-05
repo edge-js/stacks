@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import { EOL } from 'node:os'
 import { sep, join } from 'node:path'
 import { EdgeContract } from 'edge.js'
 // @ts-ignore
@@ -49,7 +50,7 @@ export async function compileAndRender(edge: EdgeContract, template: string, sta
   let compiledOutput = ''
   edge.processor.process('compiled', ({ compiled, path }) => {
     if (path.endsWith(template)) {
-      compiledOutput = compiled
+      compiledOutput = normalizeNewLines(compiled)
     }
   })
 
@@ -59,4 +60,9 @@ export async function compileAndRender(edge: EdgeContract, template: string, sta
 
   const rendered = await edge.render(template, state)
   return { compiled: compiledOutput, rendered }
+}
+
+export function normalizeNewLines(value: string) {
+  // eslint-disable-next-line @typescript-eslint/quotes
+  return value.replace(/\+=\s"\\n"/g, `+= ${EOL === '\n' ? `"\\n"` : `"\\r\\n"`}`)
 }

@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import { EOL } from 'node:os'
 import { Edge } from 'edge.js'
 import { join } from 'node:path'
 import { test } from '@japa/runner'
@@ -48,10 +49,10 @@ test.group('Fixtures', (group) => {
       const renderer = await compileAndRender(edge, 'index.edge', fixture.state)
 
       assert.deepEqual(
-        renderer.compiled.split('\n'),
-        fixture.compiled.split('\n').map((line) => subsiteFileName(fixture.fixturePath, line))
+        renderer.compiled.split(EOL),
+        fixture.compiled.split(EOL).map((line) => subsiteFileName(fixture.fixturePath, line))
       )
 
-      assert.deepEqual(renderer.rendered.split('\n'), fixture.rendered.split('\n'))
+      assert.deepEqual(renderer.rendered.split(EOL), fixture.rendered.split(EOL))
     })
 })

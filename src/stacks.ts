@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { EOL } from 'node:os'
+
 /**
  * Core implementation of the stacks feature in Edge
  */
@@ -83,7 +85,7 @@ export default class Stacks {
         stackContents.push(source.join('\n'))
       }
 
-      contents = contents.replace(this.createPlaceholder(name), stackContents.join('\n'))
+      contents = contents.replace(this.createPlaceholder(name), stackContents.join(EOL))
     }
 
     return contents
