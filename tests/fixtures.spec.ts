@@ -11,8 +11,7 @@ import { Edge } from 'edge.js'
 import { join } from 'node:path'
 import { test } from '@japa/runner'
 
-import Stacks from '../src/stacks'
-import { stack } from '../src/tags/stack'
+import { edgeStacks } from '../index'
 import { pushTo } from '../src/tags/push_to'
 import { pushOnceTo } from '../src/tags/push_once_to'
 import { subsiteFileName, fixturesLoader, compileAndRender } from '../test-helpers'
@@ -43,12 +42,10 @@ test.group('Fixtures', (group) => {
     .with(() => fixturesLoader(basePath))
     .run(async ({ assert }, fixture) => {
       const edge = new Edge()
-      edge.registerTag(stack)
-      edge.registerTag(pushTo)
-      edge.registerTag(pushOnceTo)
+      edge.use(edgeStacks)
       edge.mount(fixture.fixturePath)
 
-      const renderer = await compileAndRender(edge, 'index.edge', fixture.state, new Stacks())
+      const renderer = await compileAndRender(edge, 'index.edge', fixture.state)
 
       assert.deepEqual(
         renderer.compiled.split('\n'),

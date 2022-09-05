@@ -78,13 +78,12 @@ export default class Stacks {
    */
   replacePlaceholders(contents: string) {
     for (let [name, sources] of this.placeholders) {
-      if (sources.size === 0) {
-        contents = contents.replace(this.createPlaceholder(name), '')
-      } else {
-        for (let [, source] of sources) {
-          contents = contents.replace(this.createPlaceholder(name), source.join('\n'))
-        }
+      const stackContents = []
+      for (let [, source] of sources) {
+        stackContents.push(source.join('\n'))
       }
+
+      contents = contents.replace(this.createPlaceholder(name), stackContents.join('\n'))
     }
 
     return contents

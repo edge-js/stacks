@@ -28,6 +28,28 @@ export const pushOnceTo: TagContract & { generateId(): string } = {
   generateId() {
     return `stack_${nanoid()}`
   },
+  boot(template) {
+    template.getter(
+      'stackSources',
+      () => {
+        return {}
+      },
+      true
+    )
+
+    template.macro(
+      'trackStackSource',
+      function (stack: string, filename: string, line: string, col: string) {
+        const key = `${stack}_${filename}_${line}_${col}`
+        if (this.stackSources[key]) {
+          return false
+        }
+
+        this.stackSources[key] = true
+        return true
+      }
+    )
+  },
   compile(parser, buffer, token) {
     const parsed = parser.utils.transformAst(
       parser.utils.generateAST(token.properties.jsArg, token.loc, token.filename),
@@ -61,7 +83,7 @@ export const pushOnceTo: TagContract & { generateId(): string } = {
      */
     const stackBuffer = buffer.create(token.filename, { outputVar: stackId })
     buffer.writeStatement(
-      `if (!state.$stacks.has(${stackName}, '${stackId}')) {`,
+      `if (template.trackStackSource(${stackName}, '${token.filename}', ${token.loc.start.line}, ${token.loc.start.col})) {`,
       token.filename,
       token.loc.start.line
     )

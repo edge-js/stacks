@@ -8,7 +8,17 @@
  */
 
 import { EdgeContract } from 'edge.js'
+
 import Stacks from './src/stacks'
+import { stack } from './src/tags/stack'
+import { pushTo } from './src/tags/push_to'
+import { pushOnceTo } from './src/tags/push_once_to'
+
+declare module 'edge.js' {
+  interface TemplateContract {
+    stackSources: any
+  }
+}
 
 export function edgeStacks(edge: EdgeContract) {
   /**
@@ -17,6 +27,13 @@ export function edgeStacks(edge: EdgeContract) {
   edge.processor.process('output', ({ output, state }) => {
     return state.$stacks.replacePlaceholders(output)
   })
+
+  /**
+   * Register tags
+   */
+  edge.registerTag(stack)
+  edge.registerTag(pushTo)
+  edge.registerTag(pushOnceTo)
 
   /**
    * Share stacks with every template

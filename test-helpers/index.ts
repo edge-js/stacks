@@ -12,7 +12,6 @@ import { EdgeContract } from 'edge.js'
 // @ts-ignore
 import * as stringify from 'js-stringify'
 import { readFile, readdir, stat } from 'node:fs/promises'
-import Stacks from '../src/stacks'
 
 export function subsiteFileName(basePath: string, value: string) {
   value = value.replace('{{__dirname}}', `${basePath}${sep}`)
@@ -46,12 +45,7 @@ export async function fixturesLoader(basePath: string) {
   return fixtures
 }
 
-export async function compileAndRender(
-  edge: EdgeContract,
-  template: string,
-  state: any,
-  stacks: Stacks
-) {
+export async function compileAndRender(edge: EdgeContract, template: string, state: any) {
   let compiledOutput = ''
   edge.processor.process('compiled', ({ compiled, path }) => {
     if (path.endsWith(template)) {
@@ -63,6 +57,6 @@ export async function compileAndRender(
     return outputState.$stacks.replacePlaceholders(output)
   })
 
-  const rendered = await edge.share({ $stacks: stacks }).render(template, state)
+  const rendered = await edge.render(template, state)
   return { compiled: compiledOutput, rendered }
 }
