@@ -22,6 +22,26 @@ export function subsituteFileName(basePath: string, value: string) {
   return value
 }
 
+export function normalizeNewLines(value: string) {
+  return value.replace(/\+=\s"\\n"/g, `+= ${EOL === '\n' ? `"\\n"` : `"\\r\\n"`}`)
+}
+
+export async function compileAndRender(edge: EdgeContract, template: string, state: any) {
+  let compiledOutput = ''
+  edge.processor.process('compiled', ({ compiled, path }) => {
+    if (path.endsWith(template)) {
+      compiledOutput = normalizeNewLines(compiled)
+    }
+  })
+
+  edge.processor.process('output', ({ output, state: outputState }) => {
+    return outputState.$stacks.replacePlaceholders(output)
+  })
+
+  const rendered = await edge.render(template, state)
+  return { compiled: compiledOutput, rendered: rendered.split(EOL).join('\n') }
+}
+
 export async function loadFixture(fixturePath: string) {
   const state = JSON.parse(await readFile(join(fixturePath, 'index.json'), 'utf-8'))
   const rendered = await readFile(join(fixturePath, 'index.txt'), 'utf-8')
@@ -49,24 +69,4 @@ export async function fixturesLoader(basePath: string) {
   }
 
   return fixtures
-}
-
-export async function compileAndRender(edge: EdgeContract, template: string, state: any) {
-  let compiledOutput = ''
-  edge.processor.process('compiled', ({ compiled, path }) => {
-    if (path.endsWith(template)) {
-      compiledOutput = normalizeNewLines(compiled)
-    }
-  })
-
-  edge.processor.process('output', ({ output, state: outputState }) => {
-    return outputState.$stacks.replacePlaceholders(output)
-  })
-
-  const rendered = await edge.render(template, state)
-  return { compiled: compiledOutput, rendered: rendered.split(EOL).join('\n') }
-}
-
-export function normalizeNewLines(value: string) {
-  return value.replace(/\+=\s"\\n"/g, `+= ${EOL === '\n' ? `"\\n"` : `"\\r\\n"`}`)
 }

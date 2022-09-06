@@ -1,6 +1,6 @@
 # Edge stacks
 
-[![gh-workflow-image]][gh-workflow-url] [![appveyor-image]][appveyor-url] [![typescript-image]][typescript-url] [![npm-image]][npm-url] [![license-image]][license-url] [![synk-image]][synk-url]
+[![gh-workflow-image]][gh-workflow-url] [![typescript-image]][typescript-url] [![npm-image]][npm-url] [![license-image]][license-url] [![synk-image]][synk-url]
 
 Edge stacks allow you to create content placeholders and push content inside them from other parts of your template. For example, You can create a placeholder for inline JavaScript in the `head` tag and push `script` tags inside it from components.
 
@@ -29,7 +29,7 @@ Edge stacks allow you to create content placeholders and push content inside the
 
 3. Finally, we must create the `sayMessage` function. With stacks, you can write JavaScript within the same component file.
     ```html
-    <button click="sayMessage('{{ message }}')">
+    <button onclick="sayMessage('{{ message }}')">
       Click me to get the message
     </button>
 
