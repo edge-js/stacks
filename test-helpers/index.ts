@@ -14,7 +14,7 @@ import { EdgeContract } from 'edge.js'
 import * as stringify from 'js-stringify'
 import { readFile, readdir, stat } from 'node:fs/promises'
 
-export function subsiteFileName(basePath: string, value: string) {
+export function subsituteFileName(basePath: string, value: string) {
   value = value.replace('{{__dirname}}', `${basePath}${sep}`)
   if (value.trim().startsWith('let $filename') || value.trim().startsWith('$filename =')) {
     return value.replace(/=\s"(.*)"/, (_, group) => `= ${stringify(group)}`)
@@ -27,7 +27,12 @@ export async function loadFixture(fixturePath: string) {
   const rendered = await readFile(join(fixturePath, 'index.txt'), 'utf-8')
   const compiled = await readFile(join(fixturePath, 'compiled.js'), 'utf-8')
 
-  return { state, rendered, compiled: normalizeNewLines(compiled), fixturePath }
+  return {
+    state,
+    rendered: rendered.split(EOL).join('\n'),
+    compiled: normalizeNewLines(compiled),
+    fixturePath,
+  }
 }
 
 export async function fixturesLoader(basePath: string) {
@@ -51,8 +56,6 @@ export async function compileAndRender(edge: EdgeContract, template: string, sta
   edge.processor.process('compiled', ({ compiled, path }) => {
     if (path.endsWith(template)) {
       compiledOutput = normalizeNewLines(compiled)
-    } else {
-      console.log(compiled)
     }
   })
 
@@ -61,10 +64,9 @@ export async function compileAndRender(edge: EdgeContract, template: string, sta
   })
 
   const rendered = await edge.render(template, state)
-  return { compiled: compiledOutput, rendered }
+  return { compiled: compiledOutput, rendered: rendered.split(EOL).join('\n') }
 }
 
 export function normalizeNewLines(value: string) {
-  // eslint-disable-next-line @typescript-eslint/quotes
   return value.replace(/\+=\s"\\n"/g, `+= ${EOL === '\n' ? `"\\n"` : `"\\r\\n"`}`)
 }

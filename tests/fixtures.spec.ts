@@ -7,7 +7,6 @@
  * file that was distributed with this source code.
  */
 
-import { EOL } from 'node:os'
 import { Edge } from 'edge.js'
 import { join } from 'node:path'
 import { test } from '@japa/runner'
@@ -15,7 +14,7 @@ import { test } from '@japa/runner'
 import { edgeStacks } from '../index'
 import { pushTo } from '../src/tags/push_to'
 import { pushOnceTo } from '../src/tags/push_once_to'
-import { subsiteFileName, fixturesLoader, compileAndRender } from '../test-helpers'
+import { subsituteFileName, fixturesLoader, compileAndRender } from '../test-helpers'
 
 // eslint-disable-next-line unicorn/prefer-module
 const basePath = join(__dirname, '../fixtures')
@@ -49,10 +48,10 @@ test.group('Fixtures', (group) => {
       const renderer = await compileAndRender(edge, 'index.edge', fixture.state)
 
       assert.deepEqual(
-        renderer.compiled.split(EOL),
-        fixture.compiled.split(EOL).map((line) => subsiteFileName(fixture.fixturePath, line))
+        renderer.compiled.split('\n'),
+        fixture.compiled.split('\n').map((line) => subsituteFileName(fixture.fixturePath, line))
       )
 
-      assert.deepEqual(renderer.rendered.split(EOL), fixture.rendered.split(EOL))
+      assert.deepEqual(renderer.rendered.split('\n'), fixture.rendered.split('\n'))
     })
 })

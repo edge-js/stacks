@@ -7,8 +7,9 @@
  * file that was distributed with this source code.
  */
 
-import Stacks from '../../src/stacks'
+import { EOL } from 'node:os'
 import { test } from '@japa/runner'
+import Stacks from '../../src/stacks'
 
 test.group('Stacks', () => {
   test('create a stack placeholder', ({ assert }) => {
@@ -45,6 +46,6 @@ test.group('Stacks', () => {
     stacks.pushTo('js', 'hello world')
     stacks.pushTo('js', 'hi world')
 
-    assert.equal(stacks.replacePlaceholders(contents), 'hello world\nhi world')
+    assert.equal(stacks.replacePlaceholders(contents), `hello world${EOL}hi world`)
   })
 })
