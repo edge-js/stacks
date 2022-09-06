@@ -14,7 +14,7 @@ $lineNumber = 5;
 stack_2 += `${state.requireFoo}`;
 stack_2 += "\n";
 stack_2 += "  \u003C\u002Fscript\u003E";
-state.$stacks.pushTo('js', 'stack_2', stack_2);
+state.$stacks.pushTo('js', stack_2);
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);
 }

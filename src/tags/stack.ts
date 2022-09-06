@@ -31,7 +31,7 @@ export const stack: TagContract = {
      */
     if (expressions.SequenceExpression.includes(parsed.type)) {
       throw new EdgeError(
-        `"${token.properties.jsArg}" is not a valid argument type for the @stack tag`,
+        `"${token.properties.jsArg}" is not a valid argument type for the "@stack" tag`,
         'E_UNALLOWED_EXPRESSION',
         {
           ...parser.utils.getExpressionLoc(parsed),

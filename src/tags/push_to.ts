@@ -10,12 +10,8 @@
 import { TagContract } from 'edge.js'
 import { EdgeError } from 'edge-error'
 import { expressions } from 'edge-parser'
-import { customAlphabet } from 'nanoid/non-secure'
 
-/**
- * Nanoid instance for variable safe unique names
- */
-const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 10)
+import { nanoid } from '../utils'
 
 /**
  * Stack tag to define stack placeholders
@@ -40,7 +36,7 @@ export const pushTo: TagContract & { generateId(): string } = {
      */
     if (expressions.SequenceExpression.includes(parsed.type)) {
       throw new EdgeError(
-        `"${token.properties.jsArg}" is not a valid argument type for the @pushTo tag`,
+        `"${token.properties.jsArg}" is not a valid argument type for the "@pushTo" tag`,
         'E_UNALLOWED_EXPRESSION',
         {
           ...parser.utils.getExpressionLoc(parsed),
@@ -81,7 +77,7 @@ export const pushTo: TagContract & { generateId(): string } = {
     )
 
     buffer.writeExpression(
-      `state.$stacks.pushTo(${parser.utils.stringify(parsed)}, '${stackId}', ${stackId})`,
+      `state.$stacks.pushTo(${parser.utils.stringify(parsed)}, ${stackId})`,
       token.filename,
       token.loc.start.line
     )

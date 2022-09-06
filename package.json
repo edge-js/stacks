@@ -109,10 +109,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thetutlage/boilerplate.git"
+    "url": "git+https://github.com/edge-js/stacks.git"
   },
   "bugs": {
-    "url": "https://github.com/thetutlage/boilerplate/issues"
+    "url": "https://github.com/edge-js/stacks/issues"
   },
-  "homepage": "https://github.com/thetutlage/boilerplate#readme"
+  "homepage": "https://github.com/edge-js/stacks#readme"
 }

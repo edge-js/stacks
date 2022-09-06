@@ -13,26 +13,13 @@ import { EOL } from 'node:os'
  * Core implementation of the stacks feature in Edge
  */
 export default class Stacks {
-  private placeholders: Map<string, Map<string, string[]>> = new Map()
+  private placeholders: Map<string, string[]> = new Map()
 
   /**
    * Returns the placeholder name for a given stack
    */
   private createPlaceholder(name: string) {
     return `<!-- @edge.stacks.${name} -->`
-  }
-
-  /**
-   * Check if the contents for a unique key already exists
-   * inside a given stack or not
-   */
-  has(name: string, uniqueKey: string) {
-    const placeholder = this.placeholders.get(name)
-    if (!placeholder) {
-      return false
-    }
-
-    return placeholder.has(uniqueKey)
   }
 
   /**
@@ -44,34 +31,26 @@ export default class Stacks {
       throw new Error(`Cannot declare stack "${name}" for multiple times`)
     }
 
-    this.placeholders.set(name, new Map())
+    this.placeholders.set(name, [])
     return this.createPlaceholder(name)
   }
 
   /**
    * Push content inside a given stack
    */
-  pushTo(name: string, uniqueKey: string, contents: string) {
+  pushTo(name: string, contents: string) {
     const placeholder = this.placeholders.get(name)
     if (!placeholder) {
       throw new Error(
-        `Cannot pushTo "${name}" stack. Make sure to create a stack first using "@stack"`
+        `Cannot push to non-existing stack named "${name}". Use "@stack('${name}')" to first create a stack`
       )
-    }
-
-    /**
-     * Instantiate unique key stack if not done already
-     */
-    if (!placeholder.has(uniqueKey)) {
-      placeholder.set(uniqueKey, [])
     }
 
     /**
      * Defined content for the unique key inside a given
      * stack
      */
-    placeholder.get(uniqueKey)!.push(contents)
-
+    placeholder.push(contents)
     return this
   }
 
@@ -80,12 +59,7 @@ export default class Stacks {
    */
   replacePlaceholders(contents: string) {
     for (let [name, sources] of this.placeholders) {
-      const stackContents = []
-      for (let [, source] of sources) {
-        stackContents.push(source.join('\n'))
-      }
-
-      contents = contents.replace(this.createPlaceholder(name), stackContents.join(EOL))
+      contents = contents.replace(this.createPlaceholder(name), sources.join(EOL))
     }
 
     return contents

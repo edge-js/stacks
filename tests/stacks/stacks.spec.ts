@@ -33,7 +33,7 @@ test.group('Stacks', () => {
     const stacks = new Stacks()
 
     const contents = stacks.create('js')
-    stacks.pushTo('js', 'foo', 'hello world')
+    stacks.pushTo('js', 'hello world')
 
     assert.equal(stacks.replacePlaceholders(contents), 'hello world')
   })
@@ -42,8 +42,8 @@ test.group('Stacks', () => {
     const stacks = new Stacks()
 
     const contents = stacks.create('js')
-    stacks.pushTo('js', 'foo', 'hello world')
-    stacks.pushTo('js', 'foo', 'hi world')
+    stacks.pushTo('js', 'hello world')
+    stacks.pushTo('js', 'hi world')
 
     assert.equal(stacks.replacePlaceholders(contents), 'hello world\nhi world')
   })

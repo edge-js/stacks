@@ -10,12 +10,7 @@
 import { TagContract } from 'edge.js'
 import { EdgeError } from 'edge-error'
 import { expressions } from 'edge-parser'
-import { customAlphabet } from 'nanoid/non-secure'
-
-/**
- * Nanoid instance for variable safe unique names
- */
-const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 10)
+import { nanoid } from '../utils'
 
 /**
  * Stack tag to define stack placeholders
@@ -29,6 +24,10 @@ export const pushOnceTo: TagContract & { generateId(): string } = {
     return `stack_${nanoid()}`
   },
   boot(template) {
+    /**
+     * Tracking stack sources to avoid duplicate calls
+     * from the same file:line:col
+     */
     template.getter(
       'stackSources',
       () => {
@@ -62,7 +61,7 @@ export const pushOnceTo: TagContract & { generateId(): string } = {
      */
     if (expressions.SequenceExpression.includes(parsed.type)) {
       throw new EdgeError(
-        `"${token.properties.jsArg}" is not a valid argument type for the @pushTo tag`,
+        `"${token.properties.jsArg}" is not a valid argument type for the "@pushOnceTo" tag`,
         'E_UNALLOWED_EXPRESSION',
         {
           ...parser.utils.getExpressionLoc(parsed),
@@ -82,11 +81,15 @@ export const pushOnceTo: TagContract & { generateId(): string } = {
      * to the main buffer
      */
     const stackBuffer = buffer.create(token.filename, { outputVar: stackId })
-    buffer.writeStatement(
-      `if (template.trackStackSource(${stackName}, '${token.filename}', ${token.loc.start.line}, ${token.loc.start.col})) {`,
-      token.filename,
-      token.loc.start.line
-    )
+
+    const { line, col } = token.loc.start
+    const normalizedFileName = token.filename.replace(/\\|\//g, '_')
+    const conditional = `template.trackStackSource(${stackName}, '${normalizedFileName}', ${line}, ${col})`
+
+    /**
+     * Start if block
+     */
+    buffer.writeStatement(`if (${conditional}) {`, token.filename, line)
 
     /**
      * Process children
@@ -105,15 +108,18 @@ export const pushOnceTo: TagContract & { generateId(): string } = {
         .disableTryCatchBlock()
         .flush(),
       token.filename,
-      token.loc.start.line
+      line
     )
 
     buffer.writeExpression(
-      `state.$stacks.pushTo(${parser.utils.stringify(parsed)}, '${stackId}', ${stackId})`,
+      `state.$stacks.pushTo(${parser.utils.stringify(parsed)}, ${stackId})`,
       token.filename,
-      token.loc.start.line
+      line
     )
 
-    buffer.writeStatement('}', token.filename, token.loc.start.line)
+    /**
+     * End if block
+     */
+    buffer.writeStatement('}', token.filename, line)
   },
 }

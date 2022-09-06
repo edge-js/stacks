@@ -12,7 +12,7 @@ stack_1 += "\n";
 stack_1 += "  var a = require('a')";
 stack_1 += "\n";
 stack_1 += "  \u003C\u002Fscript\u003E";
-state.$stacks.pushTo('js', 'stack_1', stack_1);
+state.$stacks.pushTo('js', stack_1);
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);
 }

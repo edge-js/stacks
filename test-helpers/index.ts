@@ -51,6 +51,8 @@ export async function compileAndRender(edge: EdgeContract, template: string, sta
   edge.processor.process('compiled', ({ compiled, path }) => {
     if (path.endsWith(template)) {
       compiledOutput = normalizeNewLines(compiled)
+    } else {
+      console.log(compiled)
     }
   })
 
