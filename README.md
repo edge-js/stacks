@@ -140,11 +140,11 @@ The `@pushOnceTo` tag is the same as the `@pushTo` tag. However, it pushes the c
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
 [typescript-url]: "typescript"
 
-[license-image]: https://img.shields.io/npm/l/stacks?color=blueviolet&style=for-the-badge
+[license-image]: https://img.shields.io/npm/l/edge-stacks?color=blueviolet&style=for-the-badge
 [license-url]: LICENSE.md 'license'
 
-[npm-image]: https://img.shields.io/npm/v/stacks.svg?style=for-the-badge&logo=npm
-[npm-url]: https://npmjs.org/package/estacks 'npm'
+[npm-image]: https://img.shields.io/npm/v/edge-stacks.svg?style=for-the-badge&logo=npm
+[npm-url]: https://npmjs.org/package/edge-stacks 'npm'
 
 [synk-image]: https://img.shields.io/snyk/vulnerabilities/github/edge-js/stacks?label=Synk%20Vulnerabilities&style=for-the-badge
 [synk-url]: https://snyk.io/test/github/edge-js/stacks?targetFile=package.json "synk"
