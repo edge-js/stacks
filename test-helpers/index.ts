@@ -27,7 +27,7 @@ export async function loadFixture(fixturePath: string) {
   const rendered = await readFile(join(fixturePath, 'index.txt'), 'utf-8')
   const compiled = await readFile(join(fixturePath, 'compiled.js'), 'utf-8')
 
-  return { state, rendered, compiled, fixturePath }
+  return { state, rendered, compiled: normalizeNewLines(compiled), fixturePath }
 }
 
 export async function fixturesLoader(basePath: string) {
