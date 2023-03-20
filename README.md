@@ -134,7 +134,7 @@ The `@pushOnceTo` tag is the same as the `@pushTo` tag. However, it pushes the c
 
 ![](https://cdn.jsdelivr.net/gh/thetutlage/static/sponsorkit/sponsors.png)
 
-[gh-workflow-image]: https://img.shields.io/github/workflow/status/edge-js/stacks/test?style=for-the-badge
+[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/edge-js/stacks/test.yml?style=for-the-badge
 [gh-workflow-url]: https://github.com/edge-js/stacks/actions/workflows/test.yml "Github action"
 
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
