@@ -7,9 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import { TagContract } from 'edge.js'
 import { EdgeError } from 'edge-error'
-import { expressions } from 'edge-parser'
+import type { TagContract } from 'edge.js/types'
 
 /**
  * Stack tag to define stack placeholders
@@ -29,7 +28,7 @@ export const stack: TagContract = {
     /**
      * Disallow sequence expressions
      */
-    if (expressions.SequenceExpression.includes(parsed.type)) {
+    if (parsed.type === 'SequenceExpression') {
       throw new EdgeError(
         `"${token.properties.jsArg}" is not a valid argument type for the "@stack" tag`,
         'E_UNALLOWED_EXPRESSION',

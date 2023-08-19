@@ -8,16 +8,14 @@
  */
 
 import { EOL } from 'node:os'
-import { sep, join } from 'node:path'
-import { EdgeContract } from 'edge.js'
-// @ts-ignore
-import * as stringify from 'js-stringify'
+import { fileURLToPath } from 'node:url'
+import { Edge, edgeGlobals } from 'edge.js'
 import { readFile, readdir, stat } from 'node:fs/promises'
 
-export function subsituteFileName(basePath: string, value: string) {
-  value = value.replace('{{__dirname}}', `${basePath}${sep}`)
+export function subsituteFileName(basePath: URL, value: string) {
+  value = value.replace('{{__dirname}}', `${fileURLToPath(basePath)}`)
   if (value.trim().startsWith('let $filename') || value.trim().startsWith('$filename =')) {
-    return value.replace(/=\s"(.*)"/, (_, group) => `= ${stringify(group)}`)
+    return value.replace(/=\s"(.*)"/, (_, group) => `= ${edgeGlobals.js.stringify(group)}`)
   }
   return value
 }
@@ -26,7 +24,7 @@ export function normalizeNewLines(value: string) {
   return value.replace(/\+=\s"\\n"/g, `+= ${EOL === '\n' ? `"\\n"` : `"\\r\\n"`}`)
 }
 
-export async function compileAndRender(edge: EdgeContract, template: string, state: any) {
+export async function compileAndRender(edge: Edge, template: string, state: any) {
   let compiledOutput = ''
   edge.processor.process('compiled', ({ compiled, path }) => {
     if (path.endsWith(template)) {
@@ -42,10 +40,10 @@ export async function compileAndRender(edge: EdgeContract, template: string, sta
   return { compiled: compiledOutput, rendered: rendered.split(EOL).join('\n') }
 }
 
-export async function loadFixture(fixturePath: string) {
-  const state = JSON.parse(await readFile(join(fixturePath, 'index.json'), 'utf-8'))
-  const rendered = await readFile(join(fixturePath, 'index.txt'), 'utf-8')
-  const compiled = await readFile(join(fixturePath, 'compiled.js'), 'utf-8')
+export async function loadFixture(fixturePath: URL) {
+  const state = JSON.parse(await readFile(new URL('index.json', fixturePath), 'utf-8'))
+  const rendered = await readFile(new URL('index.txt', fixturePath), 'utf-8')
+  const compiled = await readFile(new URL('compiled.js', fixturePath), 'utf-8')
 
   return {
     state,
@@ -55,12 +53,12 @@ export async function loadFixture(fixturePath: string) {
   }
 }
 
-export async function fixturesLoader(basePath: string) {
+export async function fixturesLoader(basePath: URL) {
   const list = await readdir(basePath)
   const fixtures = []
 
   for (let item of list) {
-    const fixturePath = join(basePath, item)
+    const fixturePath = new URL(`${item}/`, basePath)
     const stats = await stat(fixturePath)
 
     if (stats.isDirectory()) {

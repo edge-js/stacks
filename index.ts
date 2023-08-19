@@ -7,20 +7,16 @@
  * file that was distributed with this source code.
  */
 
-import { EdgeContract } from 'edge.js'
+import { PluginFn } from 'edge.js/types'
+import Stacks from './src/stacks.js'
+import { stack } from './src/tags/stack.js'
+import { pushTo } from './src/tags/push_to.js'
+import { pushOnceTo } from './src/tags/push_once_to.js'
 
-import Stacks from './src/stacks'
-import { stack } from './src/tags/stack'
-import { pushTo } from './src/tags/push_to'
-import { pushOnceTo } from './src/tags/push_once_to'
-
-declare module 'edge.js' {
-  interface TemplateContract {
-    stackSources: any
-  }
-}
-
-export function edgeStacks(edge: EdgeContract) {
+/**
+ * Edge plugin to implement stacks
+ */
+export const edgeStacks: PluginFn<undefined> = (edge) => {
   /**
    * Replace placeholders with actual stacks content
    */

@@ -7,10 +7,18 @@
  * file that was distributed with this source code.
  */
 
-import { TagContract } from 'edge.js'
 import { EdgeError } from 'edge-error'
-import { expressions } from 'edge-parser'
-import { nanoid } from '../utils'
+import type { Template } from 'edge.js'
+import type { TagContract } from 'edge.js/types'
+
+import { nanoid } from '../utils.js'
+
+declare module 'edge.js' {
+  export interface Template {
+    stackSources: Record<string, boolean>
+    trackStackSource: (stack: string, filename: string, line: string, col: string) => void
+  }
+}
 
 /**
  * Stack tag to define stack placeholders
@@ -36,18 +44,15 @@ export const pushOnceTo: TagContract & { generateId(): string } = {
       true
     )
 
-    template.macro(
-      'trackStackSource',
-      function (stack: string, filename: string, line: string, col: string) {
-        const key = `${stack}_${filename}_${line}_${col}`
-        if (this.stackSources[key]) {
-          return false
-        }
-
-        this.stackSources[key] = true
-        return true
+    template.macro('trackStackSource', function (this: Template, stack, filename, line, col) {
+      const key = `${stack}_${filename}_${line}_${col}`
+      if (this.stackSources[key]) {
+        return false
       }
-    )
+
+      this.stackSources[key] = true
+      return true
+    })
   },
   compile(parser, buffer, token) {
     const parsed = parser.utils.transformAst(
@@ -59,7 +64,7 @@ export const pushOnceTo: TagContract & { generateId(): string } = {
     /**
      * Disallow sequence expressions
      */
-    if (expressions.SequenceExpression.includes(parsed.type)) {
+    if (parsed.type === 'SequenceExpression') {
       throw new EdgeError(
         `"${token.properties.jsArg}" is not a valid argument type for the "@pushOnceTo" tag`,
         'E_UNALLOWED_EXPRESSION',

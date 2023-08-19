@@ -1,7 +1,7 @@
 /*
  * edge-stacks
  *
- * (c) Harminder Virk
+ * (c) Edge
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -9,7 +9,7 @@
 
 import { EOL } from 'node:os'
 import { test } from '@japa/runner'
-import Stacks from '../../src/stacks'
+import Stacks from '../../src/stacks.js'
 
 test.group('Stacks', () => {
   test('create a stack placeholder', ({ assert }) => {

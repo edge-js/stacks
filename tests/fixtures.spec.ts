@@ -8,16 +8,14 @@
  */
 
 import { Edge } from 'edge.js'
-import { join } from 'node:path'
 import { test } from '@japa/runner'
 
-import { edgeStacks } from '../index'
-import { pushTo } from '../src/tags/push_to'
-import { pushOnceTo } from '../src/tags/push_once_to'
-import { subsituteFileName, fixturesLoader, compileAndRender } from '../test-helpers'
+import { edgeStacks } from '../index.js'
+import { pushTo } from '../src/tags/push_to.js'
+import { pushOnceTo } from '../src/tags/push_once_to.js'
+import { subsituteFileName, fixturesLoader, compileAndRender } from '../test_helpers/main.js'
 
-// eslint-disable-next-line unicorn/prefer-module
-const basePath = join(__dirname, '../fixtures')
+const basePath = new URL('../fixtures/', import.meta.url)
 
 test.group('Fixtures', (group) => {
   group.setup(() => {

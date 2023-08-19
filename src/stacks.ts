@@ -13,12 +13,12 @@ import { EOL } from 'node:os'
  * Core implementation of the stacks feature in Edge
  */
 export default class Stacks {
-  private placeholders: Map<string, string[]> = new Map()
+  #placeholders: Map<string, string[]> = new Map()
 
   /**
    * Returns the placeholder name for a given stack
    */
-  private createPlaceholder(name: string) {
+  #createPlaceholder(name: string) {
     return `<!-- @edge.stacks.${name} -->`
   }
 
@@ -27,19 +27,19 @@ export default class Stacks {
    * with the same name results in an exception.
    */
   create(name: string) {
-    if (this.placeholders.has(name)) {
+    if (this.#placeholders.has(name)) {
       throw new Error(`Cannot declare stack "${name}" for multiple times`)
     }
 
-    this.placeholders.set(name, [])
-    return this.createPlaceholder(name)
+    this.#placeholders.set(name, [])
+    return this.#createPlaceholder(name)
   }
 
   /**
    * Push content inside a given stack
    */
   pushTo(name: string, contents: string) {
-    const placeholder = this.placeholders.get(name)
+    const placeholder = this.#placeholders.get(name)
     if (!placeholder) {
       throw new Error(
         `Cannot push to non-existing stack named "${name}". Use "@stack('${name}')" to first create a stack`
@@ -58,8 +58,8 @@ export default class Stacks {
    * Replace placeholders from a string with the stacks value
    */
   replacePlaceholders(contents: string) {
-    for (let [name, sources] of this.placeholders) {
-      contents = contents.replace(this.createPlaceholder(name), sources.join(EOL))
+    for (let [name, sources] of this.#placeholders) {
+      contents = contents.replace(this.#createPlaceholder(name), sources.join(EOL))
     }
 
     return contents
